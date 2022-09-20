@@ -2,6 +2,8 @@
 using MISA.WEB08.AMIS.CORE.Entities;
 using MISA.WEB08.AMIS.CORE.Entities.DTO;
 using MISA.WEB08.AMIS.INFRASTRUCTURE.Repository;
+using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
+using System.Collections.Generic;
 
 namespace MISA.WEB08.AMIS.API.Controllers
 {
@@ -124,6 +126,9 @@ namespace MISA.WEB08.AMIS.API.Controllers
         [HttpDelete("{employeeID}")]
         public IActionResult DeleteEmployee([FromRoute] Guid employeeID)
         {
+            // Thực hiện xóa 1 nhân viên
+            EmployeeRepository employeeRepository = new EmployeeRepository();
+            var result = employeeRepository.Delete(employeeID);
             return StatusCode(StatusCodes.Status200OK, employeeID);
         }
 

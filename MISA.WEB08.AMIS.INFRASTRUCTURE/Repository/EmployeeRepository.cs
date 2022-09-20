@@ -209,8 +209,8 @@ namespace MISA.WEB08.AMIS.INFRASTRUCTURE.Repository
             // khởi tạo kết nối
             var sqlConnection = new MySqlConnection(connectionString);
 
-            //thực hiện truy vấn dữ liệu trong database
-            var result = sqlConnection.QueryFirstOrDefault<string>("Call Proc_employee_GetPaging(0, 10, NULL)");
+            //thực hiện xóa 1 records trong database
+            var result = sqlConnection.QueryFirstOrDefault<string>($"CALL Proc_employee_DeleteOne(\"{employeeID}\")");
             return result;
 
         }
