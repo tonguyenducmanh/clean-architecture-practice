@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
@@ -171,11 +172,21 @@ namespace MISA.WEB08.AMIS.INFRASTRUCTURE.Repository
                 var propType = prop.PropertyType.Name;
                 // kiểm tra xem có phải là kiểu date không, nếu là kiểu date thì tiến hành format value
                 // thành định dạng value của datetime trong MySQL
-                if (propType == "DateTime" && propValue != null)
+                if (propType == "DateTime")
                 {
-                    propValue =  null;
-                    sqlColumnValue.Append($"{delimiter}null");
-                    delimiter = ",";
+                    if (propValue != null)
+                    {
+                        propValue = Convert.ToDateTime(propValue).ToString("yyyy-MM-dd HH:mm:ss");
+                        sqlColumnValue.Append($"{delimiter}\"{propValue}\"");
+                    }
+                    // nếu giá trị datetime rỗng thì sẽ chèn null vào trong query
+                    // chú ý : query để null là không có dấu nháy kép 2 đầu
+                    else
+                    {
+                        propValue = null;
+                        sqlColumnValue.Append($"{delimiter}null");
+                        delimiter = ",";
+                    }
                 }
                 // kiểm tra xem nó có phải enum không, nếu là enum thì phải lấy value theo enum
                 else if (propType == propName)
