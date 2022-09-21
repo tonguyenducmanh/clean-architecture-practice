@@ -1,11 +1,14 @@
 ﻿using Dapper;
+using Microsoft.VisualBasic;
 using MISA.WEB08.AMIS.CORE.Entities;
 using MISA.WEB08.AMIS.CORE.Entities.DTO;
 using MISA.WEB08.AMIS.CORE.Interfaces.Infrastructure;
 using MySqlConnector;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -150,8 +153,51 @@ namespace MISA.WEB08.AMIS.INFRASTRUCTURE.Repository
             // khởi tạo kết nối
             var sqlConnection = new MySqlConnection(connectionString);
 
+            // build chuỗi câu sql thực hiện thêm mới dữ liệu :
+
+            var className = typeof(Employee).Name;
+            var sqlColumnValue = new StringBuilder();
+            // lấy ra tất cả properties của đối tượng
+            // lấy ra giá trị của properties
+            // thực hiện build câu lệnh sql
+
+            var props = typeof(Employee).GetProperties();
+            var delimiter = "";
+            foreach (var prop in props)
+            {
+                // lấy ra tên của properties
+                var propName = prop.Name;
+                var propValue = prop.GetValue(employee);
+                var propType = prop.PropertyType.Name;
+                // kiểm tra xem có phải là kiểu date không, nếu là kiểu date thì tiến hành format value
+                // thành định dạng value của datetime trong MySQL
+                if (propType == "DateTime" && propValue != null)
+                {
+                    propValue =  null;
+                    sqlColumnValue.Append($"{delimiter}null");
+                    delimiter = ",";
+                }
+                // kiểm tra xem nó có phải enum không, nếu là enum thì phải lấy value theo enum
+                else if (propType == propName)
+                {
+                    propValue = (int)Enum.Parse(prop.PropertyType, propValue.ToString());
+                    sqlColumnValue.Append($"{delimiter}\"{propValue}\"");
+                    delimiter = ",";
+                }
+                else
+                // check xem có phải là trường EmployeeID không,
+                // nếu không phải thì mới thêm vào câu truy vấn vì
+                // thêm mới thì tự động sinh ra dữ liệu employeeID rồi
+                if( propName != "EmployeeID")
+                {
+                    sqlColumnValue.Append($"{delimiter}\"{propValue}\"");
+                    delimiter = ",";
+                }
+            }
+            var sqlCommand = $"Call Proc_employee_PostOne({sqlColumnValue})";
+
             //thực hiện truy vấn dữ liệu trong database
-            var result = sqlConnection.QueryFirstOrDefault<string>("Call Proc_employee_GetPaging(0, 10, NULL)");
+            var result = sqlConnection.QueryFirstOrDefault<string>(sqlCommand);
             return result;
 
         }

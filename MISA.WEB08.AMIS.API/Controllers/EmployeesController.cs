@@ -93,7 +93,11 @@ namespace MISA.WEB08.AMIS.API.Controllers
         [HttpPost]
         public IActionResult InsertEmployee([FromBody] Employee employee)
         {
-            return StatusCode(StatusCodes.Status201Created, employee.EmployeeID);
+            // Thực hiện thêm mới dữ liệu
+            EmployeeRepository employeeRepository = new EmployeeRepository();
+            var result = employeeRepository.Insert(employee);
+
+            return StatusCode(StatusCodes.Status201Created, result);
         }
 
         #endregion

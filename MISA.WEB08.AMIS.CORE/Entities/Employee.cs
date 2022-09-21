@@ -44,6 +44,10 @@ namespace MISA.WEB08.AMIS.CORE.Entities
         /// Căn cước công dân / chứng minh thư
         /// </summary>
         public string IdentityCard { get; set; }
+        /// <summary>
+        /// Nơi cấp Căn cước công dân / chứng minh thư
+        /// </summary>
+        public DateTime IdentityDate { get; set; }
 
         /// <summary>
         /// Nơi cấp căn cước công dân / chứng minh thư
