@@ -17,16 +17,8 @@ namespace MISA.WEB08.AMIS.INFRASTRUCTURE.Repository
 
     {
         // chuỗi connection string giúp kết nối tới MySQL
-        #region field
+        readonly string _connectionString = "Server = localhost;Port = 5060;Database = misa.web08.gpbl.tnmanh;User Id = root;Password = 140300;";
 
-        string _connectionString = "" +
-                "Server = localhost;" +
-                "Port = 5060;" +
-                "Database = misa.web08.gpbl.tnmanh;" +
-                "User Id = root;" +
-                "Password = 140300;";
-
-        #endregion
 
         #region method
 
@@ -61,6 +53,9 @@ namespace MISA.WEB08.AMIS.INFRASTRUCTURE.Repository
                     commandType: System.Data.CommandType.StoredProcedure
                 );
 
+            // Xóa các giá trị đang nằm trong ram đi tránh bị đầy
+            sqlConnection.Dispose();
+
             // Trả về status code kèm theo object kết quả
             return new PagingData()
             {
@@ -79,18 +74,21 @@ namespace MISA.WEB08.AMIS.INFRASTRUCTURE.Repository
         /// Created by: TNMANH (20/09/2022)
         public IEnumerable<Employee> GetAll()
         {
-                var sqlConnection = new MySqlConnection(_connectionString);
+            var sqlConnection = new MySqlConnection(_connectionString);
 
-                // chuẩn bị câu lệnh MySQL
-                string storeProcedureName = "Proc_employee_GetAll";
+            // chuẩn bị câu lệnh MySQL
+            string storeProcedureName = "Proc_employee_GetAll";
 
-                // thực hiện gọi vào DB
-                var employees = sqlConnection.Query<Employee>(
-                    storeProcedureName
-                    , commandType: System.Data.CommandType.StoredProcedure
-                    );
+            // thực hiện gọi vào DB
+            var employees = sqlConnection.Query<Employee>(
+                storeProcedureName
+                , commandType: System.Data.CommandType.StoredProcedure
+                );
 
-                return employees;
+            // Xóa các giá trị đang nằm trong ram đi tránh bị đầy
+            sqlConnection.Dispose();
+
+            return employees;
         }
 
         /// <summary>
@@ -115,6 +113,9 @@ namespace MISA.WEB08.AMIS.INFRASTRUCTURE.Repository
                 parameters,
                 commandType: System.Data.CommandType.StoredProcedure
                 );
+
+            // Xóa các giá trị đang nằm trong ram đi tránh bị đầy
+            sqlConnection.Dispose();
 
             // Trả về status code và kết quả trả về
             return employee;
@@ -167,8 +168,11 @@ namespace MISA.WEB08.AMIS.INFRASTRUCTURE.Repository
                     commandType: System.Data.CommandType.StoredProcedure
                 );
 
+            // Xóa các giá trị đang nằm trong ram đi tránh bị đầy
+            sqlConnection.Dispose();
+
             // Nếu số lượng nhân viên có mã đó lớn hơn 0 thì return true
-            if(result.Count() > 0)
+            if (result.Count() > 0)
             {
                 return true;
             }
@@ -224,6 +228,9 @@ namespace MISA.WEB08.AMIS.INFRASTRUCTURE.Repository
                     commandType: System.Data.CommandType.StoredProcedure
                 );
 
+            // Xóa các giá trị đang nằm trong ram đi tránh bị đầy
+            sqlConnection.Dispose();
+
             // Trả về kết quả
             return queryResult;
         }
@@ -267,6 +274,9 @@ namespace MISA.WEB08.AMIS.INFRASTRUCTURE.Repository
                     commandType: System.Data.CommandType.StoredProcedure
                 );
 
+            // Xóa các giá trị đang nằm trong ram đi tránh bị đầy
+            sqlConnection.Dispose();
+
             // Trả về kết quả
             return queryResult;
         }
@@ -298,6 +308,9 @@ namespace MISA.WEB08.AMIS.INFRASTRUCTURE.Repository
                 parameters,
                 commandType: System.Data.CommandType.StoredProcedure
                 );
+
+            // Xóa các giá trị đang nằm trong ram đi tránh bị đầy
+            sqlConnection.Dispose();
 
             // trả về status code và kết quả
             return deleteOne;
