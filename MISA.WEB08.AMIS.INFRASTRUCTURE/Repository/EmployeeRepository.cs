@@ -13,13 +13,9 @@ namespace MISA.WEB08.AMIS.INFRASTRUCTURE.Repository
     /// tới database
     /// </summary>
     /// Created by : TNMANH (20/08/2022)
-    public class EmployeeRepository : IEmployeeRepository
+    public class EmployeeRepository : BaseRepository, IEmployeeRepository
 
     {
-        // chuỗi connection string giúp kết nối tới MySQL
-        readonly string _connectionString = "Server = localhost;Port = 5060;Database = misa.web08.gpbl.tnmanh;User Id = root;Password = 140300;";
-
-
         #region method
 
         #region methodGET
