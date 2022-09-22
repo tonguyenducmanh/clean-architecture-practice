@@ -6,6 +6,7 @@ using MISA.WEB08.AMIS.CORE.Enums;
 using MISA.WEB08.AMIS.CORE.Interfaces.Services;
 using MISA.WEB08.AMIS.CORE.Services;
 using MISA.WEB08.AMIS.CORE.Exceptions;
+using MISA.WEB08.AMIS.CORE.Interfaces.Infrastructure;
 
 namespace MISA.WEB08.AMIS.API.Controllers
 {
@@ -17,6 +18,22 @@ namespace MISA.WEB08.AMIS.API.Controllers
     [ApiController]
     public class EmployeesController : ControllerBase
     {
+        // Thêm các Interface vào để các class không phụ thuộc trực tiếp vào nhau mà phụ thuộc thông qua Interface
+        // Sau đó dùng DI để xử lý qua file Program.cs
+        #region Dependences Injection
+
+        IEmployeeRepository _employeeRepository;
+        IEmployeeServices   _employeeServices;
+
+        #endregion
+
+        // Hàm khởi tạo để truyền Dependences Injection vào
+        public EmployeesController(IEmployeeRepository employeeRepository, IEmployeeServices employeeServices)
+        {
+            _employeeRepository = employeeRepository;
+            _employeeServices = employeeServices;
+        }
+
         // Danh sách các API liên quan tới việc lấy thông tin của nhân viên
         #region GetMethod
 
@@ -31,8 +48,7 @@ namespace MISA.WEB08.AMIS.API.Controllers
             try
             {
                 // Thực hiện lấy dữ liệu
-                EmployeeRepository employeeRepository = new EmployeeRepository();
-                var employees = employeeRepository.GetAll();
+                var employees = _employeeRepository.GetAll();
 
                 // Trả về status code và kết quả cho người dùng
                 return StatusCode(StatusCodes.Status200OK, employees);
@@ -64,8 +80,7 @@ namespace MISA.WEB08.AMIS.API.Controllers
             try
             {
                 // Thực hiện lấy dữ liệu
-                EmployeeRepository employeeRepository = new EmployeeRepository();
-                var maxEmployeeCode = employeeRepository.GetMaxCode();
+                var maxEmployeeCode = _employeeRepository.GetMaxCode();
 
                 //Trả về status code và kết quả cho người dùng
                 return StatusCode(StatusCodes.Status200OK, maxEmployeeCode);
@@ -98,8 +113,7 @@ namespace MISA.WEB08.AMIS.API.Controllers
             try
             {
                 // Thực hiện lấy dữ liệu
-                EmployeeRepository employeeRepository = new EmployeeRepository();
-                var employee = employeeRepository.GetByID(employeeID);
+                var employee = _employeeRepository.GetByID(employeeID);
                 
                 // Trả về status code và dữ liệu người dùng
                 return StatusCode(StatusCodes.Status200OK, employee);
@@ -176,12 +190,10 @@ namespace MISA.WEB08.AMIS.API.Controllers
             try
             {
                 // Validate dữ liệu
-                EmployeeServices employeeServices = new EmployeeServices();
-                var validateResult = employeeServices.InsertServices(employee);
+                var validateResult = _employeeServices.InsertServices(employee);
 
                 // Thực hiện thêm mới dữ liệu
-                EmployeeRepository employeeRepository = new EmployeeRepository();
-                var result = employeeRepository.Insert(employee);
+                var result = _employeeRepository.Insert(employee);
 
                 // Trả về status code và kết quả
                 return StatusCode(StatusCodes.Status201Created, result);
@@ -236,12 +248,10 @@ namespace MISA.WEB08.AMIS.API.Controllers
             try
             {
                 // Validate dữ liệu
-                EmployeeServices employeeServices = new EmployeeServices();
-                var validateResult = employeeServices.UpdateServices(employeeID, employee);
+                var validateResult = _employeeServices.UpdateServices(employeeID, employee);
 
                 // Thực hiện truy vấn tới databse
-                EmployeeRepository employeeRepository = new EmployeeRepository();
-                var result = employeeRepository.Update(employeeID, employee);
+                var result = _employeeRepository.Update(employeeID, employee);
 
                 // Trả về status code và kết quả truy vấn
                 return StatusCode(StatusCodes.Status200OK, result);
@@ -294,8 +304,7 @@ namespace MISA.WEB08.AMIS.API.Controllers
             try
             {
                 // Thực hiện xóa 1 nhân viên
-                EmployeeRepository employeeRepository = new EmployeeRepository();
-                var result = employeeRepository.Delete(employeeID);
+                var result = _employeeRepository.Delete(employeeID);
                 
                 // Trả về status code và kết quả truy vấn
                 return StatusCode(StatusCodes.Status200OK, employeeID);

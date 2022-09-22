@@ -142,6 +142,42 @@ namespace MISA.WEB08.AMIS.INFRASTRUCTURE.Repository
             return maxCode;
         }
 
+        /// <summary>
+        /// Check xem mã nhân viên có bị trùng hay không
+        /// </summary>
+        /// <param name="employeeCode">Mã nhân viên</param>
+        /// <returns></returns>
+        /// Created by: TNMANH (20/09/2022)
+        public bool CheckDuplicateCode(string employeeCode)
+        {
+            /// Khởi tạo kết nối tới Database
+            var sqlConnection = new MySqlConnection(_connectionString);
+
+            /// Khởi tạo storeProcedure
+            var storeProcedureName = "Proc_employee_GetOneCode";
+
+            /// Khởi tạo param
+            DynamicParameters parameters = new DynamicParameters();
+            parameters.Add("v_EmployeeCode", employeeCode);
+
+            /// Thực hiện truy vấn kiểm tra tên
+            var result = sqlConnection.Query(
+                    storeProcedureName,
+                    parameters,
+                    commandType: System.Data.CommandType.StoredProcedure
+                );
+
+            // Nếu số lượng nhân viên có mã đó lớn hơn 0 thì return true
+            if(result.Count() > 0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
+        }
         #endregion
 
         #region methodPOST

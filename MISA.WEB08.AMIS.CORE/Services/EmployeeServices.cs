@@ -1,5 +1,6 @@
 ﻿using MISA.WEB08.AMIS.CORE.Entities;
 using MISA.WEB08.AMIS.CORE.Exceptions;
+using MISA.WEB08.AMIS.CORE.Interfaces.Infrastructure;
 using MISA.WEB08.AMIS.CORE.Interfaces.Services;
 
 namespace MISA.WEB08.AMIS.CORE.Services
@@ -11,6 +12,24 @@ namespace MISA.WEB08.AMIS.CORE.Services
     /// Created by: TNMANH (20/09/2022)
     public class EmployeeServices : IEmployeeServices
     {
+
+        // Khai báo sự phụ thuộc vào các Interface và tiến hành Dependences Injection
+        // Để tuân thủ chữ D trong nguyên tắc SOLID
+        #region Dependences Injection
+
+        IEmployeeRepository _employeeRepository;
+
+        #endregion
+
+        // tiến hành Injection ở đây
+        #region contructor
+
+        public EmployeeServices(IEmployeeRepository employeeRepository)
+        {
+            _employeeRepository = employeeRepository;
+        }
+
+        #endregion
 
         #region method
 
@@ -35,12 +54,17 @@ namespace MISA.WEB08.AMIS.CORE.Services
             {
                 throw new MISAValidateException("ID phòng ban không được phép để trống");
             }
-            else
-            {
-                return 1;
-            }
+
             // Check mã nhân viên không được phép trùng với nhân viên khác
             //phần này do employeeRepository xử lý
+            var isDuplicate = _employeeRepository.CheckDuplicateCode(employee.EmployeeCode);
+
+            if (isDuplicate == true)
+            {
+                throw new MISAValidateException("Mã nhân viên đã bị trùng, vui lòng nhập mã nhân viên khác");
+            }
+            
+            return 1;
         }
 
         /// <summary>
@@ -61,16 +85,12 @@ namespace MISA.WEB08.AMIS.CORE.Services
             {
                 throw new MISAValidateException("Tên nhân viên không được phép để trống");
             }
-            else if (employee.DepartmentID == null|| employee.DepartmentID == Guid.Empty)
+            else if (employee.DepartmentID == null || employee.DepartmentID == Guid.Empty)
             {
                 throw new MISAValidateException("ID phòng ban không được phép để trống");
             }
-            else
-            {
-                return 1;
-            }
-            // Check mã nhân viên không được phép trùng với nhân viên khác
-            //phần này do employeeRepository xử lý
+
+            return 1;
         }
 
     #endregion

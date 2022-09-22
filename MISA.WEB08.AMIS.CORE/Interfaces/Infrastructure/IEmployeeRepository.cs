@@ -49,7 +49,16 @@ namespace MISA.WEB08.AMIS.CORE.Interfaces.Infrastructure
         /// </summary>
         /// <param name="employeeID"></param>
         /// <returns></returns>
+        /// Created by: TNMANH (20/09/2022)
         Employee GetByID(Guid employeeID);
+
+        /// <summary>
+        /// Check trùng mã nhân viên
+        /// </summary>
+        /// <param name="employeeCode">Mã nhân viên</param>
+        /// <returns></returns>
+        /// Created by : TNMANH (22/09/2022)
+        bool CheckDuplicateCode(string employeeCode);
 
         #endregion
 
