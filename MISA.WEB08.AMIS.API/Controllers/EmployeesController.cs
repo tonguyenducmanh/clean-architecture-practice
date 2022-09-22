@@ -2,8 +2,7 @@
 using MISA.WEB08.AMIS.CORE.Entities;
 using MISA.WEB08.AMIS.CORE.Entities.DTO;
 using MISA.WEB08.AMIS.INFRASTRUCTURE.Repository;
-using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
-using System.Collections.Generic;
+using MISA.WEB08.AMIS.CORE.Enums;
 
 namespace MISA.WEB08.AMIS.API.Controllers
 {
@@ -26,11 +25,29 @@ namespace MISA.WEB08.AMIS.API.Controllers
         [HttpGet("")]
         public IActionResult GetAllEmployees()
         {
-            // Thực hiện lấy dữ liệu
-            EmployeeRepository employeeRepository = new EmployeeRepository();
-            var employees = employeeRepository.GetAll();
-           
-            return StatusCode(StatusCodes.Status200OK, employees);
+            try
+            {
+                // Thực hiện lấy dữ liệu
+                EmployeeRepository employeeRepository = new EmployeeRepository();
+                var employees = employeeRepository.GetAll();
+
+                // Trả về status code và kết quả cho người dùng
+                return StatusCode(StatusCodes.Status200OK, employees);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+
+                // Trả về status code và object báo lỗi cho người dùng
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResult
+                (
+                    ErrorCode.Exception,
+                    ex.Message,
+                    "Có lỗi xảy ra, vui lòng liên hệ với MISA.",
+                    "https://openapi.misa.com.vn/errorcode/e001",
+                     HttpContext.TraceIdentifier
+                ));
+            }
         }
 
         /// <summary>
@@ -41,7 +58,29 @@ namespace MISA.WEB08.AMIS.API.Controllers
         [HttpGet("max-code")]
         public IActionResult GetMaxEmployeeCode()
         {
-            return StatusCode(StatusCodes.Status200OK, "NV99999");
+            try
+            {
+                // Thực hiện lấy dữ liệu
+                EmployeeRepository employeeRepository = new EmployeeRepository();
+                var maxEmployeeCode = employeeRepository.GetMaxCode();
+
+                //Trả về status code và kết quả cho người dùng
+                return StatusCode(StatusCodes.Status200OK, maxEmployeeCode);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+
+                // Trả về status code và object báo lỗi cho người dùng
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResult
+                (
+                    ErrorCode.Exception,
+                    ex.Message,
+                    "Có lỗi xảy ra, vui lòng liên hệ với MISA.",
+                    "https://openapi.misa.com.vn/errorcode/e001",
+                     HttpContext.TraceIdentifier
+                ));
+            }
         }
 
         /// <summary>
@@ -53,10 +92,29 @@ namespace MISA.WEB08.AMIS.API.Controllers
         [HttpGet("{employeeID}")]
         public IActionResult GetEmployeeByID([FromRoute] Guid employeeID)
         {
-            // Thực hiện lấy dữ liệu
-            EmployeeRepository employeeRepository = new EmployeeRepository();
-            var employee = employeeRepository.GetByID(employeeID);
-            return StatusCode(StatusCodes.Status200OK, employee);
+            try
+            {
+                // Thực hiện lấy dữ liệu
+                EmployeeRepository employeeRepository = new EmployeeRepository();
+                var employee = employeeRepository.GetByID(employeeID);
+                
+                // Trả về status code và dữ liệu người dùng
+                return StatusCode(StatusCodes.Status200OK, employee);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+
+                // Trả về status code và object báo lỗi cho người dùng
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResult
+                (
+                    ErrorCode.Exception,
+                    ex.Message,
+                    "Có lỗi xảy ra, vui lòng liên hệ với MISA.",
+                    "https://openapi.misa.com.vn/errorcode/e001",
+                     HttpContext.TraceIdentifier
+                ));
+            }
         }
 
         /// <summary>
@@ -73,10 +131,29 @@ namespace MISA.WEB08.AMIS.API.Controllers
             [FromQuery] int offset
             )
         {
-            // Thực hiện lấy dữ liệu
-            EmployeeRepository employeeRepository = new EmployeeRepository();
-            var result = employeeRepository.Filter(keyword, limit, offset);
-            return StatusCode(StatusCodes.Status200OK, result);
+            try
+            {
+                // Thực hiện lấy dữ liệu
+                EmployeeRepository employeeRepository = new EmployeeRepository();
+                var result = employeeRepository.Filter(keyword, limit, offset);
+                
+                // Trả về status code và dữ liệu truy vấn
+                return StatusCode(StatusCodes.Status200OK, result);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+
+                // Trả về status code và object báo lỗi cho người dùng
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResult
+                (
+                    ErrorCode.Exception,
+                    ex.Message,
+                    "Có lỗi xảy ra, vui lòng liên hệ với MISA.",
+                    "https://openapi.misa.com.vn/errorcode/e001",
+                     HttpContext.TraceIdentifier
+                ));
+            }
         }
 
         #endregion
@@ -93,15 +170,34 @@ namespace MISA.WEB08.AMIS.API.Controllers
         [HttpPost]
         public IActionResult InsertEmployee([FromBody] Employee employee)
         {
-            // Thực hiện thêm mới dữ liệu
-            EmployeeRepository employeeRepository = new EmployeeRepository();
-            var result = employeeRepository.Insert(employee);
+            try
+            {
+                // Thực hiện thêm mới dữ liệu
+                EmployeeRepository employeeRepository = new EmployeeRepository();
+                var result = employeeRepository.Insert(employee);
 
-            return StatusCode(StatusCodes.Status201Created, result);
+                // Trả về status code và kết quả
+                return StatusCode(StatusCodes.Status201Created, result);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+
+                // Trả về status code và object báo lỗi cho người dùng
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResult
+                (
+                    ErrorCode.Exception,
+                    ex.Message,
+                    "Có lỗi xảy ra, vui lòng liên hệ với MISA.",
+                    "https://openapi.misa.com.vn/errorcode/e001",
+                     HttpContext.TraceIdentifier
+                ));
+            }
         }
 
         #endregion
 
+        // Danh sách các API liên quan tới việc sửa nhân viên đã có
         #region PutMethod
 
         /// <summary>
@@ -114,11 +210,34 @@ namespace MISA.WEB08.AMIS.API.Controllers
         [HttpPut("{employeeID}")]        
         public IActionResult UpdateEmployee([FromRoute] Guid employeeID, [FromBody] Employee employee)
         {
-            return StatusCode(StatusCodes.Status200OK, employeeID);
+            try
+            {
+                // Thực hiện truy vấn tới databse
+                EmployeeRepository employeeRepository = new EmployeeRepository();
+                var result = employeeRepository.Update(employeeID, employee);
+
+                // Trả về status code và kết quả truy vấn
+                return StatusCode(StatusCodes.Status200OK, result);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+
+                // Trả về status code và object báo lỗi cho người dùng
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResult
+                (
+                    ErrorCode.Exception,
+                    ex.Message,
+                    "Có lỗi xảy ra, vui lòng liên hệ với MISA.",
+                    "https://openapi.misa.com.vn/errorcode/e001",
+                     HttpContext.TraceIdentifier
+                ));
+            }
         }
 
         #endregion
 
+        // Danh sách các API liên quan tới việc xóa nhân viên
         #region DeleteMethod
 
         /// <summary>
@@ -130,10 +249,29 @@ namespace MISA.WEB08.AMIS.API.Controllers
         [HttpDelete("{employeeID}")]
         public IActionResult DeleteEmployee([FromRoute] Guid employeeID)
         {
-            // Thực hiện xóa 1 nhân viên
-            EmployeeRepository employeeRepository = new EmployeeRepository();
-            var result = employeeRepository.Delete(employeeID);
-            return StatusCode(StatusCodes.Status200OK, employeeID);
+            try
+            {
+                // Thực hiện xóa 1 nhân viên
+                EmployeeRepository employeeRepository = new EmployeeRepository();
+                var result = employeeRepository.Delete(employeeID);
+                
+                // Trả về status code và kết quả truy vấn
+                return StatusCode(StatusCodes.Status200OK, employeeID);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+
+                // Trả về status code và object báo lỗi cho người dùng
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResult
+                (
+                    ErrorCode.Exception,
+                    ex.Message,
+                    "Có lỗi xảy ra, vui lòng liên hệ với MISA.",
+                    "https://openapi.misa.com.vn/errorcode/e001",
+                     HttpContext.TraceIdentifier
+                ));
+            }
         }
 
         #endregion

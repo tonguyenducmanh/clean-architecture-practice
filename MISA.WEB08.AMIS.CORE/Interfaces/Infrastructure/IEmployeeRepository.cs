@@ -61,7 +61,7 @@ namespace MISA.WEB08.AMIS.CORE.Interfaces.Infrastructure
         /// <param name="employee"></param>
         /// <returns>ID của nhân viên</returns>
         /// Created by: TNMANH (20/09/2022)
-        String Insert(Employee employee);
+        int Insert(Employee employee);
 
         #endregion
 
@@ -73,7 +73,7 @@ namespace MISA.WEB08.AMIS.CORE.Interfaces.Infrastructure
         /// <param name="employee">Thông tin sửa của nhân viên đó</param>
         /// <returns>ID của nhân viên</returns>
         /// Created by: TNMANH (20/09/2022)
-        String Update(Guid employeeID, Employee employee);
+        int Update(Guid employeeID, Employee employee);
 
         #endregion
 
@@ -85,7 +85,7 @@ namespace MISA.WEB08.AMIS.CORE.Interfaces.Infrastructure
         /// <param name="employeeID">ID của nhân viên đó</param>
         /// <returns>ID của nhân viên</returns>
         /// Created by: TNMANH (20/09/2022)
-        String Delete(Guid employeeID);
+        int Delete(Guid employeeID);
 
         #endregion
 

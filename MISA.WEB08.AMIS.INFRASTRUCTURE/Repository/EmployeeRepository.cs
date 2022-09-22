@@ -1,17 +1,10 @@
 ﻿using Dapper;
-using Microsoft.VisualBasic;
+using Microsoft.AspNetCore.Http;
 using MISA.WEB08.AMIS.CORE.Entities;
 using MISA.WEB08.AMIS.CORE.Entities.DTO;
 using MISA.WEB08.AMIS.CORE.Interfaces.Infrastructure;
 using MySqlConnector;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Security.AccessControl;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace MISA.WEB08.AMIS.INFRASTRUCTURE.Repository
 {
@@ -44,18 +37,32 @@ namespace MISA.WEB08.AMIS.INFRASTRUCTURE.Repository
                 "Database = misa.web08.gpbl.tnmanh;" +
                 "User Id = root;" +
                 "Password = 140300;";
-
-            // khởi tạo kết nối
             var sqlConnection = new MySqlConnection(connectionString);
 
-            //thực hiện truy vấn dữ liệu trong database
-            var result = sqlConnection.QueryMultiple($"Call Proc_employee_GetPaging({offset}, {limit}, \"{keyword}\")"); ;
+            // Chuẩn bị câu lệnh MySQL
+            string storeProcedureName = "Proc_employee_GetPaging";
+
+            // Chèn parameter cho procedure
+            DynamicParameters parameters = new DynamicParameters();
+
+            parameters.Add("v_Offset", offset);
+            parameters.Add("v_Limit", limit);
+            parameters.Add("v_Search", keyword);
+
+            // Thực hiện gọi vào trong Database
+            var employeesFiltered = sqlConnection.QueryMultiple(
+                    storeProcedureName,
+                    parameters,
+                    commandType: System.Data.CommandType.StoredProcedure
+                );
+
+            // Trả về status code kèm theo object kết quả
             return new PagingData()
             {
                 PageSize = limit,
                 PageNumber = offset / limit + 1,
-                Data = result.Read<Employee>().ToList(),
-                TotalCount = unchecked((int)result.ReadSingle().TotalCount),
+                Data = employeesFiltered.Read<Employee>().ToList(),
+                TotalCount = unchecked((int)employeesFiltered.ReadSingle().TotalCount),
             };
 
         }
@@ -67,21 +74,25 @@ namespace MISA.WEB08.AMIS.INFRASTRUCTURE.Repository
         /// Created by: TNMANH (20/09/2022)
         public IEnumerable<Employee> GetAll()
         {
-            // Tạo connection string
-            string connectionString = "" +
-                "Server = localhost;" +
-                "Port = 5060;" +
-                "Database = misa.web08.gpbl.tnmanh;" +
-                "User Id = root;" +
-                "Password = 140300;";
+                // Tạo connection string
+                string connectionString = "" +
+                    "Server = localhost;" +
+                    "Port = 5060;" +
+                    "Database = misa.web08.gpbl.tnmanh;" +
+                    "User Id = root;" +
+                    "Password = 140300;";
+                var sqlConnection = new MySqlConnection(connectionString);
 
-            // khởi tạo kết nối
-            var sqlConnection = new MySqlConnection(connectionString);
+                // chuẩn bị câu lệnh MySQL
+                string storeProcedureName = "Proc_employee_GetAll";
 
-            //thực hiện truy vấn dữ liệu trong database
-            var result = sqlConnection.Query<Employee>("Call Proc_employee_GetPaging(0, 10, NULL)");
-            return result;
+                // thực hiện gọi vào DB
+                var employees = sqlConnection.Query<Employee>(
+                    storeProcedureName
+                    , commandType: System.Data.CommandType.StoredProcedure
+                    );
 
+                return employees;
         }
 
         /// <summary>
@@ -91,20 +102,31 @@ namespace MISA.WEB08.AMIS.INFRASTRUCTURE.Repository
         /// <returns></returns>
         public Employee GetByID(Guid employeeID)
         {
-            // Tạo connection string
+            // Tạo connection String
             string connectionString = "" +
                 "Server = localhost;" +
                 "Port = 5060;" +
                 "Database = misa.web08.gpbl.tnmanh;" +
                 "User Id = root;" +
                 "Password = 140300;";
-
-            // khởi tạo kết nối
             var sqlConnection = new MySqlConnection(connectionString);
 
-            //thực hiện truy vấn dữ liệu trong database
-            var result = sqlConnection.QueryFirstOrDefault<Employee>($"Call Proc_employee_GetOne(\"{employeeID}\")");
-            return result;
+            // Khai báo procedure name
+            string storeProcedureName = "Proc_employee_GetOne";
+
+            // Khởi tạo các parameter để chèn vào trong storeprocedure
+            DynamicParameters parameters = new DynamicParameters();
+            parameters.Add("v_id", employeeID);
+
+            // Thực hiện kết nối tới Database
+            var employee = sqlConnection.QueryFirstOrDefault<Employee>(
+                storeProcedureName,
+                parameters,
+                commandType: System.Data.CommandType.StoredProcedure
+                );
+
+            // Trả về status code và kết quả trả về
+            return employee;
         }
 
         /// <summary>
@@ -116,19 +138,25 @@ namespace MISA.WEB08.AMIS.INFRASTRUCTURE.Repository
         {
             // Tạo connection string
             string connectionString = "" +
-                "Server = localhost;" +
-                "Port = 5060;" +
-                "Database = misa.web08.gpbl.tnmanh;" +
-                "User Id = root;" +
-                "Password = 140300;";
+            "Server = localhost;" +
+            "Port = 5060;" +
+            "Database = misa.web08.gpbl.tnmanh;" +
+            "User Id = root;" +
+            "Password = 140300;";
 
-            // khởi tạo kết nối
             var sqlConnection = new MySqlConnection(connectionString);
 
-            //thực hiện truy vấn dữ liệu trong database
-            var result = sqlConnection.QueryFirstOrDefault<string>("Call Proc_employee_GetMaxCode()");
-            return result;
+            // Chuẩn bị câu lệnh Query
+            string storeProcedureName = "Proc_employee_GetMaxCode";
 
+            // Thực hiện gọi vào Database
+            var maxCode = sqlConnection.QueryFirstOrDefault<String>(
+                storeProcedureName,
+                commandType: System.Data.CommandType.StoredProcedure
+                );
+
+            // Trả về Status code và kết quả
+            return maxCode;
         }
 
         #endregion
@@ -141,7 +169,7 @@ namespace MISA.WEB08.AMIS.INFRASTRUCTURE.Repository
         /// <param name="employee"></param>
         /// <returns>ID của nhân viên</returns>
         /// Created by: TNMANH (20/09/2022)
-        public string Insert(Employee employee)
+        public int Insert(Employee employee)
         {
             // Tạo connection string
             string connectionString = "" +
@@ -151,66 +179,42 @@ namespace MISA.WEB08.AMIS.INFRASTRUCTURE.Repository
                 "User Id = root;" +
                 "Password = 140300;";
 
-            // khởi tạo kết nối
             var sqlConnection = new MySqlConnection(connectionString);
 
-            // build chuỗi câu sql thực hiện thêm mới dữ liệu :
+            // chuẩn bị câu lệnh MySQL
+            string storeProcedureName = "Proc_employee_PostOne";
 
-            var className = typeof(Employee).Name;
-            var sqlColumnValue = new StringBuilder();
-            // lấy ra tất cả properties của đối tượng
-            // lấy ra giá trị của properties
-            // thực hiện build câu lệnh sql
+            // Truyền tham số vào store procedure
+            DynamicParameters parameters = new DynamicParameters();
 
+            // Tạo ra employeeID bằng guid
+            Guid employeeID = Guid.NewGuid();
+
+            parameters.Add("v_EmployeeID", employeeID);
+
+            // Chèn các giá trị khác vào param cho store procedure
             var props = typeof(Employee).GetProperties();
-            var delimiter = "";
+
             foreach (var prop in props)
             {
                 // lấy ra tên của properties
                 var propName = prop.Name;
                 var propValue = prop.GetValue(employee);
-                var propType = prop.PropertyType.Name;
-                // kiểm tra xem có phải là kiểu date không, nếu là kiểu date thì tiến hành format value
-                // thành định dạng value của datetime trong MySQL
-                if (propType == "DateTime")
+                if (propName != "EmployeeID")
                 {
-                    if (propValue != null)
-                    {
-                        propValue = Convert.ToDateTime(propValue).ToString("yyyy-MM-dd HH:mm:ss");
-                        sqlColumnValue.Append($"{delimiter}\"{propValue}\"");
-                    }
-                    // nếu giá trị datetime rỗng thì sẽ chèn null vào trong query
-                    // chú ý : query để null là không có dấu nháy kép 2 đầu
-                    else
-                    {
-                        propValue = null;
-                        sqlColumnValue.Append($"{delimiter}null");
-                        delimiter = ",";
-                    }
-                }
-                // kiểm tra xem nó có phải enum không, nếu là enum thì phải lấy value theo enum
-                else if (propType == propName)
-                {
-                    propValue = (int)Enum.Parse(prop.PropertyType, propValue.ToString());
-                    sqlColumnValue.Append($"{delimiter}\"{propValue}\"");
-                    delimiter = ",";
-                }
-                else
-                // check xem có phải là trường EmployeeID không,
-                // nếu không phải thì mới thêm vào câu truy vấn vì
-                // thêm mới thì tự động sinh ra dữ liệu employeeID rồi
-                if( propName != "EmployeeID")
-                {
-                    sqlColumnValue.Append($"{delimiter}\"{propValue}\"");
-                    delimiter = ",";
+                    parameters.Add($"v_{propName}", propValue);
                 }
             }
-            var sqlCommand = $"Call Proc_employee_PostOne({sqlColumnValue})";
 
-            //thực hiện truy vấn dữ liệu trong database
-            var result = sqlConnection.QueryFirstOrDefault<string>(sqlCommand);
-            return result;
+            // Thực hiện chèn dữ liệu vào trong database
+            var queryResult = sqlConnection.Execute(
+                    storeProcedureName,
+                    parameters,
+                    commandType: System.Data.CommandType.StoredProcedure
+                );
 
+            // Trả về kết quả
+            return queryResult;
         }
 
         #endregion
@@ -224,7 +228,7 @@ namespace MISA.WEB08.AMIS.INFRASTRUCTURE.Repository
         /// <param name="employee">Thông tin sửa của nhân viên đó</param>
         /// <returns>ID của nhân viên</returns>
         /// Created by: TNMANH (20/09/2022)
-        public string Update(Guid employeeID, Employee employee)
+        public int Update(Guid employeeID, Employee employee)
         {
             // Tạo connection string
             string connectionString = "" +
@@ -234,13 +238,34 @@ namespace MISA.WEB08.AMIS.INFRASTRUCTURE.Repository
                 "User Id = root;" +
                 "Password = 140300;";
 
-            // khởi tạo kết nối
             var sqlConnection = new MySqlConnection(connectionString);
 
-            //thực hiện truy vấn dữ liệu trong database
-            var result = sqlConnection.QueryFirstOrDefault<string>("Call Proc_employee_GetPaging(0, 10, NULL)");
-            return result;
+            // chuẩn bị câu lệnh MySQL
+            string storeProcedureName = "Proc_employee_PutOne";
 
+            // Truyền tham số vào store procedure
+            DynamicParameters parameters = new DynamicParameters();
+
+            // Chèn các giá trị khác vào param cho store procedure
+            var props = typeof(Employee).GetProperties();
+
+            foreach (var prop in props)
+            {
+                // lấy ra tên của properties
+                var propName = prop.Name;
+                var propValue = prop.GetValue(employee);
+                parameters.Add($"v_{propName}", propValue);
+            }
+
+            // Thực hiện chèn dữ liệu vào trong database
+            var queryResult = sqlConnection.Execute(
+                    storeProcedureName,
+                    parameters,
+                    commandType: System.Data.CommandType.StoredProcedure
+                );
+
+            // Trả về kết quả
+            return queryResult;
         }
 
         #endregion
@@ -253,7 +278,7 @@ namespace MISA.WEB08.AMIS.INFRASTRUCTURE.Repository
         /// <param name="employeeID">ID của nhân viên đó</param>
         /// <returns>ID của nhân viên</returns>
         /// Created by: TNMANH (20/09/2022)
-        public string Delete(Guid employeeID)
+        public int Delete(Guid employeeID)
         {
             // Tạo connection string
             string connectionString = "" +
@@ -262,14 +287,24 @@ namespace MISA.WEB08.AMIS.INFRASTRUCTURE.Repository
                 "Database = misa.web08.gpbl.tnmanh;" +
                 "User Id = root;" +
                 "Password = 140300;";
-
-            // khởi tạo kết nối
             var sqlConnection = new MySqlConnection(connectionString);
 
-            //thực hiện xóa 1 records trong database
-            var result = sqlConnection.QueryFirstOrDefault<string>($"CALL Proc_employee_DeleteOne(\"{employeeID}\")");
-            return result;
+            // khởi tạo store procedure
+            string storeProcedureName = "Proc_employee_DeleteOne";
 
+            // khởi tạo các parameter truyền vào trong store procedure
+            DynamicParameters parameters = new DynamicParameters();
+            parameters.Add("v_id", employeeID);
+
+            // thực hiện truy vấn tới database
+            var deleteOne = sqlConnection.Execute(
+                storeProcedureName,
+                parameters,
+                commandType: System.Data.CommandType.StoredProcedure
+                );
+
+            // trả về status code và kết quả
+            return deleteOne;
         }
 
         #endregion
