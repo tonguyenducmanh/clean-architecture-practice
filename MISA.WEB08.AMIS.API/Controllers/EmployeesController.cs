@@ -3,6 +3,9 @@ using MISA.WEB08.AMIS.CORE.Entities;
 using MISA.WEB08.AMIS.CORE.Entities.DTO;
 using MISA.WEB08.AMIS.INFRASTRUCTURE.Repository;
 using MISA.WEB08.AMIS.CORE.Enums;
+using MISA.WEB08.AMIS.CORE.Interfaces.Services;
+using MISA.WEB08.AMIS.CORE.Services;
+using MISA.WEB08.AMIS.CORE.Exceptions;
 
 namespace MISA.WEB08.AMIS.API.Controllers
 {
@@ -172,6 +175,10 @@ namespace MISA.WEB08.AMIS.API.Controllers
         {
             try
             {
+                // Validate dữ liệu
+                EmployeeServices employeeServices = new EmployeeServices();
+                var validateResult = employeeServices.InsertServices(employee);
+
                 // Thực hiện thêm mới dữ liệu
                 EmployeeRepository employeeRepository = new EmployeeRepository();
                 var result = employeeRepository.Insert(employee);
@@ -179,6 +186,22 @@ namespace MISA.WEB08.AMIS.API.Controllers
                 // Trả về status code và kết quả
                 return StatusCode(StatusCodes.Status201Created, result);
             }
+            //Validate mà trả về misa exception thì vào cái dưới
+            catch (MISAValidateException ex)
+            {
+                Console.WriteLine(ex.Message);
+
+                // Trả về status code và object báo lỗi cho người dùng
+                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResult
+                (
+                    ErrorCode.EmptyCode,
+                    ex.Message,
+                    "Có lỗi xảy ra, vui lòng liên hệ với MISA.",
+                    "https://openapi.misa.com.vn/errorcode/e001",
+                     HttpContext.TraceIdentifier
+                ));
+            }
+            //Exception chung thì vào đây
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
@@ -212,12 +235,31 @@ namespace MISA.WEB08.AMIS.API.Controllers
         {
             try
             {
+                // Validate dữ liệu
+                EmployeeServices employeeServices = new EmployeeServices();
+                var validateResult = employeeServices.UpdateServices(employeeID, employee);
+
                 // Thực hiện truy vấn tới databse
                 EmployeeRepository employeeRepository = new EmployeeRepository();
                 var result = employeeRepository.Update(employeeID, employee);
 
                 // Trả về status code và kết quả truy vấn
                 return StatusCode(StatusCodes.Status200OK, result);
+            }
+            //Validate mà trả về misa exception thì vào cái dưới
+            catch (MISAValidateException ex)
+            {
+                Console.WriteLine(ex.Message);
+
+                // Trả về status code và object báo lỗi cho người dùng
+                return StatusCode(StatusCodes.Status400BadRequest, new ErrorResult
+                (
+                    ErrorCode.EmptyCode,
+                    ex.Message,
+                    "Có lỗi xảy ra, vui lòng liên hệ với MISA.",
+                    "https://openapi.misa.com.vn/errorcode/e001",
+                     HttpContext.TraceIdentifier
+                ));
             }
             catch (Exception ex)
             {

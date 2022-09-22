@@ -31,7 +31,7 @@ namespace MISA.WEB08.AMIS.CORE.Interfaces.Services
         /// <param name="employeeID"></param>
         /// <returns></returns>
         /// Created by : TNMANH (20/09/2022)
-        int UpdateServices(Employee employee, Guid employeeID); 
+        int UpdateServices(Guid employeeID, Employee employee); 
 
         #endregion
 
