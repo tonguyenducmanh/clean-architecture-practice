@@ -16,6 +16,18 @@ namespace MISA.WEB08.AMIS.INFRASTRUCTURE.Repository
     public class EmployeeRepository : IEmployeeRepository
 
     {
+        // chuỗi connection string giúp kết nối tới MySQL
+        #region field
+
+        string _connectionString = "" +
+                "Server = localhost;" +
+                "Port = 5060;" +
+                "Database = misa.web08.gpbl.tnmanh;" +
+                "User Id = root;" +
+                "Password = 140300;";
+
+        #endregion
+
         #region method
 
         #region methodGET
@@ -30,14 +42,7 @@ namespace MISA.WEB08.AMIS.INFRASTRUCTURE.Repository
         /// Created by: TNMANH (20/09/2022)
         public PagingData Filter(string keyword, int limit, int offset)
         {
-            // Tạo connection string
-            string connectionString = "" +
-                "Server = localhost;" +
-                "Port = 5060;" +
-                "Database = misa.web08.gpbl.tnmanh;" +
-                "User Id = root;" +
-                "Password = 140300;";
-            var sqlConnection = new MySqlConnection(connectionString);
+            var sqlConnection = new MySqlConnection(_connectionString);
 
             // Chuẩn bị câu lệnh MySQL
             string storeProcedureName = "Proc_employee_GetPaging";
@@ -74,14 +79,7 @@ namespace MISA.WEB08.AMIS.INFRASTRUCTURE.Repository
         /// Created by: TNMANH (20/09/2022)
         public IEnumerable<Employee> GetAll()
         {
-                // Tạo connection string
-                string connectionString = "" +
-                    "Server = localhost;" +
-                    "Port = 5060;" +
-                    "Database = misa.web08.gpbl.tnmanh;" +
-                    "User Id = root;" +
-                    "Password = 140300;";
-                var sqlConnection = new MySqlConnection(connectionString);
+                var sqlConnection = new MySqlConnection(_connectionString);
 
                 // chuẩn bị câu lệnh MySQL
                 string storeProcedureName = "Proc_employee_GetAll";
@@ -102,14 +100,7 @@ namespace MISA.WEB08.AMIS.INFRASTRUCTURE.Repository
         /// <returns></returns>
         public Employee GetByID(Guid employeeID)
         {
-            // Tạo connection String
-            string connectionString = "" +
-                "Server = localhost;" +
-                "Port = 5060;" +
-                "Database = misa.web08.gpbl.tnmanh;" +
-                "User Id = root;" +
-                "Password = 140300;";
-            var sqlConnection = new MySqlConnection(connectionString);
+            var sqlConnection = new MySqlConnection(_connectionString);
 
             // Khai báo procedure name
             string storeProcedureName = "Proc_employee_GetOne";
@@ -136,15 +127,7 @@ namespace MISA.WEB08.AMIS.INFRASTRUCTURE.Repository
         /// Created by: TNMANH (20/09/2022)
         public string GetMaxCode()
         {
-            // Tạo connection string
-            string connectionString = "" +
-            "Server = localhost;" +
-            "Port = 5060;" +
-            "Database = misa.web08.gpbl.tnmanh;" +
-            "User Id = root;" +
-            "Password = 140300;";
-
-            var sqlConnection = new MySqlConnection(connectionString);
+            var sqlConnection = new MySqlConnection(_connectionString);
 
             // Chuẩn bị câu lệnh Query
             string storeProcedureName = "Proc_employee_GetMaxCode";
@@ -171,15 +154,7 @@ namespace MISA.WEB08.AMIS.INFRASTRUCTURE.Repository
         /// Created by: TNMANH (20/09/2022)
         public int Insert(Employee employee)
         {
-            // Tạo connection string
-            string connectionString = "" +
-                "Server = localhost;" +
-                "Port = 5060;" +
-                "Database = misa.web08.gpbl.tnmanh;" +
-                "User Id = root;" +
-                "Password = 140300;";
-
-            var sqlConnection = new MySqlConnection(connectionString);
+            var sqlConnection = new MySqlConnection(_connectionString);
 
             // chuẩn bị câu lệnh MySQL
             string storeProcedureName = "Proc_employee_PostOne";
@@ -230,15 +205,7 @@ namespace MISA.WEB08.AMIS.INFRASTRUCTURE.Repository
         /// Created by: TNMANH (20/09/2022)
         public int Update(Guid employeeID, Employee employee)
         {
-            // Tạo connection string
-            string connectionString = "" +
-                "Server = localhost;" +
-                "Port = 5060;" +
-                "Database = misa.web08.gpbl.tnmanh;" +
-                "User Id = root;" +
-                "Password = 140300;";
-
-            var sqlConnection = new MySqlConnection(connectionString);
+            var sqlConnection = new MySqlConnection(_connectionString);
 
             // chuẩn bị câu lệnh MySQL
             string storeProcedureName = "Proc_employee_PutOne";
@@ -280,14 +247,7 @@ namespace MISA.WEB08.AMIS.INFRASTRUCTURE.Repository
         /// Created by: TNMANH (20/09/2022)
         public int Delete(Guid employeeID)
         {
-            // Tạo connection string
-            string connectionString = "" +
-                "Server = localhost;" +
-                "Port = 5060;" +
-                "Database = misa.web08.gpbl.tnmanh;" +
-                "User Id = root;" +
-                "Password = 140300;";
-            var sqlConnection = new MySqlConnection(connectionString);
+            var sqlConnection = new MySqlConnection(_connectionString);
 
             // khởi tạo store procedure
             string storeProcedureName = "Proc_employee_DeleteOne";
