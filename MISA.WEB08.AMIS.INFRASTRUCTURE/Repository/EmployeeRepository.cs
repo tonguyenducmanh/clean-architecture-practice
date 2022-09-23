@@ -13,7 +13,7 @@ namespace MISA.WEB08.AMIS.INFRASTRUCTURE.Repository
     /// tới database
     /// </summary>
     /// Created by : TNMANH (20/08/2022)
-    public class EmployeeRepository : BaseRepository, IEmployeeRepository
+    public class EmployeeRepository : BaseRepository<Employee>, IEmployeeRepository
 
     {
         #region method
@@ -68,24 +68,14 @@ namespace MISA.WEB08.AMIS.INFRASTRUCTURE.Repository
         /// </summary>
         /// <returns>Danh sách nhân viên</returns>
         /// Created by: TNMANH (20/09/2022)
-        public IEnumerable<Employee> GetAll()
-        {
-            var sqlConnection = new MySqlConnection(_connectionString);
-
-            // chuẩn bị câu lệnh MySQL
-            string storeProcedureName = "Proc_employee_GetAll";
-
-            // thực hiện gọi vào DB
-            var employees = sqlConnection.Query<Employee>(
-                storeProcedureName
-                , commandType: System.Data.CommandType.StoredProcedure
-                );
-
-            // Xóa các giá trị đang nằm trong ram đi tránh bị đầy
-            sqlConnection.Dispose();
-
-            return employees;
-        }
+        /// method bên dưới thằng cha có rồi nên chả cần viết nữa
+        
+        //public IEnumerable<Employee> GetAll()
+        //{
+        //    // thực hiện gọi vào DB, phải dùng base . nếu không sẽ ko gọi được
+        //    // tới  method của class cha
+        //    return base.GetAll();
+        //}
 
         /// <summary>
         /// Lấy thông tin chi tiết của 1 nhân viên
@@ -188,48 +178,49 @@ namespace MISA.WEB08.AMIS.INFRASTRUCTURE.Repository
         /// <param name="employee"></param>
         /// <returns>ID của nhân viên</returns>
         /// Created by: TNMANH (20/09/2022)
-        public int Insert(Employee employee)
-        {
-            var sqlConnection = new MySqlConnection(_connectionString);
+        /// Phần này được kế thừa từ bên BaseRepository
+        //public int Insert(Employee employee)
+        //{
+        //    var sqlConnection = new MySqlConnection(_connectionString);
 
-            // chuẩn bị câu lệnh MySQL
-            string storeProcedureName = "Proc_employee_PostOne";
+        //    // chuẩn bị câu lệnh MySQL
+        //    string storeProcedureName = "Proc_employee_PostOne";
 
-            // Truyền tham số vào store procedure
-            DynamicParameters parameters = new DynamicParameters();
+        //    // Truyền tham số vào store procedure
+        //    DynamicParameters parameters = new DynamicParameters();
 
-            // Tạo ra employeeID bằng guid
-            Guid employeeID = Guid.NewGuid();
+        //    // Tạo ra employeeID bằng guid
+        //    Guid employeeID = Guid.NewGuid();
 
-            parameters.Add("v_EmployeeID", employeeID);
+        //    parameters.Add("v_EmployeeID", employeeID);
 
-            // Chèn các giá trị khác vào param cho store procedure
-            var props = typeof(Employee).GetProperties();
+        //    // Chèn các giá trị khác vào param cho store procedure
+        //    var props = typeof(Employee).GetProperties();
 
-            foreach (var prop in props)
-            {
-                // lấy ra tên của properties
-                var propName = prop.Name;
-                var propValue = prop.GetValue(employee);
-                if (propName != "EmployeeID")
-                {
-                    parameters.Add($"v_{propName}", propValue);
-                }
-            }
+        //    foreach (var prop in props)
+        //    {
+        //        // lấy ra tên của properties
+        //        var propName = prop.Name;
+        //        var propValue = prop.GetValue(employee);
+        //        if (propName != "EmployeeID")
+        //        {
+        //            parameters.Add($"v_{propName}", propValue);
+        //        }
+        //    }
 
-            // Thực hiện chèn dữ liệu vào trong database
-            var queryResult = sqlConnection.Execute(
-                    storeProcedureName,
-                    parameters,
-                    commandType: System.Data.CommandType.StoredProcedure
-                );
+        //    // Thực hiện chèn dữ liệu vào trong database
+        //    var queryResult = sqlConnection.Execute(
+        //            storeProcedureName,
+        //            parameters,
+        //            commandType: System.Data.CommandType.StoredProcedure
+        //        );
 
-            // Xóa các giá trị đang nằm trong ram đi tránh bị đầy
-            sqlConnection.Dispose();
+        //    // Xóa các giá trị đang nằm trong ram đi tránh bị đầy
+        //    sqlConnection.Dispose();
 
-            // Trả về kết quả
-            return queryResult;
-        }
+        //    // Trả về kết quả
+        //    return queryResult;
+        //}
 
         #endregion
 
@@ -242,40 +233,41 @@ namespace MISA.WEB08.AMIS.INFRASTRUCTURE.Repository
         /// <param name="employee">Thông tin sửa của nhân viên đó</param>
         /// <returns>ID của nhân viên</returns>
         /// Created by: TNMANH (20/09/2022)
-        public int Update(Guid employeeID, Employee employee)
-        {
-            var sqlConnection = new MySqlConnection(_connectionString);
+        /// Phần này kế thừa từ bên Base Employee rồi
+        //public int Update(Guid employeeID, Employee employee)
+        //{
+        //    var sqlConnection = new MySqlConnection(_connectionString);
 
-            // chuẩn bị câu lệnh MySQL
-            string storeProcedureName = "Proc_employee_PutOne";
+        //    // chuẩn bị câu lệnh MySQL
+        //    string storeProcedureName = "Proc_employee_PutOne";
 
-            // Truyền tham số vào store procedure
-            DynamicParameters parameters = new DynamicParameters();
+        //    // Truyền tham số vào store procedure
+        //    DynamicParameters parameters = new DynamicParameters();
 
-            // Chèn các giá trị khác vào param cho store procedure
-            var props = typeof(Employee).GetProperties();
+        //    // Chèn các giá trị khác vào param cho store procedure
+        //    var props = typeof(Employee).GetProperties();
 
-            foreach (var prop in props)
-            {
-                // lấy ra tên của properties
-                var propName = prop.Name;
-                var propValue = prop.GetValue(employee);
-                parameters.Add($"v_{propName}", propValue);
-            }
+        //    foreach (var prop in props)
+        //    {
+        //        // lấy ra tên của properties
+        //        var propName = prop.Name;
+        //        var propValue = prop.GetValue(employee);
+        //        parameters.Add($"v_{propName}", propValue);
+        //    }
 
-            // Thực hiện chèn dữ liệu vào trong database
-            var queryResult = sqlConnection.Execute(
-                    storeProcedureName,
-                    parameters,
-                    commandType: System.Data.CommandType.StoredProcedure
-                );
+        //    // Thực hiện chèn dữ liệu vào trong database
+        //    var queryResult = sqlConnection.Execute(
+        //            storeProcedureName,
+        //            parameters,
+        //            commandType: System.Data.CommandType.StoredProcedure
+        //        );
 
-            // Xóa các giá trị đang nằm trong ram đi tránh bị đầy
-            sqlConnection.Dispose();
+        //    // Xóa các giá trị đang nằm trong ram đi tránh bị đầy
+        //    sqlConnection.Dispose();
 
-            // Trả về kết quả
-            return queryResult;
-        }
+        //    // Trả về kết quả
+        //    return queryResult;
+        //}
 
         #endregion
 

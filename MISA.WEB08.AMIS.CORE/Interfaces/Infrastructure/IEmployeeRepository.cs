@@ -13,18 +13,11 @@ namespace MISA.WEB08.AMIS.CORE.Interfaces.Infrastructure
     /// Từ ứng dụng tới Database
     /// </summary>
     /// Created by : TNMANH (20/08/2022)
-    public interface IEmployeeRepository
+    public interface IEmployeeRepository: IBaseRepository<Employee>
     {
         #region method
 
         #region methodGET
-
-        /// <summary>
-        /// Lấy tất cả nhân viên
-        /// </summary>
-        /// <returns>Danh sách nhân viên</returns>
-        /// Created by: TNMANH (20/09/2022)
-        IEnumerable<Employee> GetAll();
 
         /// <summary>
         /// Lấy danh sách nhân viên theo điều kiện

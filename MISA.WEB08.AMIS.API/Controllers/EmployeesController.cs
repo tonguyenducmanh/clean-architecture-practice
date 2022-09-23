@@ -27,12 +27,14 @@ namespace MISA.WEB08.AMIS.API.Controllers
 
         #endregion
 
+        #region Contructor
         // Hàm khởi tạo để truyền Dependences Injection vào
         public EmployeesController(IEmployeeRepository employeeRepository, IEmployeeServices employeeServices)
         {
             _employeeRepository = employeeRepository;
             _employeeServices = employeeServices;
-        }
+        } 
+        #endregion
 
         // Danh sách các API liên quan tới việc lấy thông tin của nhân viên
         #region GetMethod

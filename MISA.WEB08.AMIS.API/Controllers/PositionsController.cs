@@ -1,64 +1,76 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MISA.WEB08.AMIS.CORE.Entities;
+using MISA.WEB08.AMIS.CORE.Entities.DTO;
+using MISA.WEB08.AMIS.CORE.Enums;
+using MISA.WEB08.AMIS.CORE.Interfaces.Infrastructure;
 
 namespace MISA.WEB08.AMIS.API.Controllers
 {
     /// <summary>
     /// Các api liên quan tới việc lấy dữ liệu chức vụ từ bảng positions trong database
     /// </summary>
-    /// Created by : TNMANH (17/09/2022)
+    /// Created by : TNMANH (23/09/2022)
     [Route("api/v1/[controller]")]
     [ApiController]
     public class PositionsController : ControllerBase
     {
-        #region method GET
-        /// <summary>
-        /// Lấy danh sách tất cả các chức vụ
-        /// </summary>
-        /// Created by : TNMANH (17/09/2022)
-        /// <returns>Danh sách tất cả chức vụ</returns>
-        [HttpGet]
-        [Route("")]
-        public IActionResult GetAllPositions()
+        // Thêm các Interface vào để các class không phụ thuộc trực tiếp vào nhau
+        // Sau đó dùng DI để cử lý qua file Program.cs
+        #region Dependences Injection
+
+        IPositionRepository _positionRepository;
+
+        #endregion
+
+        // Hàm khởi tạo để truyền Dependences Injection vào
+        #region Contructor
+
+        public PositionsController(IPositionRepository positionRepository)
         {
-            return StatusCode(StatusCodes.Status200OK, new List<Position>
+            _positionRepository = positionRepository;
+        }
+
+        #endregion
+
+        // Danh sách các API liên quan tới việc lấy thông tin chức vụ
+        #region method
+
+        #region methodGet
+
+        /// <summary>
+        /// API lấy toàn bộ thông tin chức vụ
+        /// </summary>
+        /// <returns>Danh sách chức vụ</returns>
+        /// Created by : TNMANH (23/09/2022)
+        [HttpGet]
+        public IActionResult GetAllPosition()
+        {
+            try
             {
-                new Position
-                {
-                    PositionID = Guid.NewGuid(),
-                    PositionCode = "P001",
-                    PositionName = "Giám đốc",
-                    Description = "Đây là mô tả về vị trí giám đốc",
-                    CreatedDate = DateTime.Now,
-                    CreatedBy = "Liễu Thị Oanh",
-                    ModifiedDate = DateTime.Now,
-                    ModifiedBy = "Trần Xuân Bảo",
-                },
-                new Position
-                {
-                    PositionID = Guid.NewGuid(),
-                    PositionCode = "P002",
-                    PositionName = "Chủ tịch",
-                    Description = "Đây là mô tả về vị trí chủ tịch",
-                    CreatedDate = DateTime.Now,
-                    CreatedBy = "Liễu Thị Oanh",
-                    ModifiedDate = DateTime.Now,
-                    ModifiedBy = "Phạm Thị Phương",
-                },
-                new Position
-                {
-                    PositionID = Guid.NewGuid(),
-                    PositionCode = "P003",
-                    PositionName = "Trưởng phòng",
-                    Description = "Đây là mô tả về vị trí trưởng phòng",
-                    CreatedDate = DateTime.Now,
-                    CreatedBy = "Liễu Thị Oanh",
-                    ModifiedDate = DateTime.Now,
-                    ModifiedBy = "Phạm Thị Phương",
-                }
-            });
-        } 
+                // Thực hiện lấy dữ liệu
+                var position = _positionRepository.GetAll();
+
+                // Trả về status code và kết quả cho người dùng
+                return StatusCode(StatusCodes.Status200OK, position);
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+
+                // Trả về status code và object báo lỗi cho người dùng
+                return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResult(
+                    ErrorCode.Exception,
+                    ex.Message,
+                    "Có lỗi xảy ra, vui lòng liên hệ với MISA.",
+                    "https://openapi.misa.com.vn/error-code/e001",
+                    HttpContext.TraceIdentifier
+                    ));
+            }
+        }
+
+        #endregion
+
         #endregion
     }
 }
