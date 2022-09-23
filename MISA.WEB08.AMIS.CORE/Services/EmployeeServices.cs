@@ -2,6 +2,7 @@
 using MISA.WEB08.AMIS.CORE.Exceptions;
 using MISA.WEB08.AMIS.CORE.Interfaces.Infrastructure;
 using MISA.WEB08.AMIS.CORE.Interfaces.Services;
+using MISA.WEB08.AMIS.CORE.Resources;
 
 namespace MISA.WEB08.AMIS.CORE.Services
 {
@@ -44,15 +45,15 @@ namespace MISA.WEB08.AMIS.CORE.Services
             // Mã nhân viên không được phép để trống
             if (string.IsNullOrEmpty(employee.EmployeeCode))
             {
-                throw new MISAValidateException("Mã nhân viên không được phép để trống");
+                throw new MISAValidateException(ResourceVN.Error_Validate_Employee_EmployeeCode);
             }
             else if (string.IsNullOrEmpty(employee.FullName))
             {
-                throw new MISAValidateException("Tên nhân viên không được phép để trống");
+                throw new MISAValidateException(ResourceVN.Error_Validate_Employee_FullName);
             }
             else if (employee.DepartmentID == null || employee.DepartmentID == Guid.Empty)
             {
-                throw new MISAValidateException("ID phòng ban không được phép để trống");
+                throw new MISAValidateException(ResourceVN.Error_Validate_Department_DepartmentID);
             }
 
             // Check mã nhân viên không được phép trùng với nhân viên khác
@@ -61,7 +62,7 @@ namespace MISA.WEB08.AMIS.CORE.Services
 
             if (isDuplicate == true)
             {
-                throw new MISAValidateException("Mã nhân viên đã bị trùng, vui lòng nhập mã nhân viên khác");
+                throw new MISAValidateException(ResourceVN.Error_Validate_Employee_Duplicate);
             }
             
             return 1;
@@ -79,15 +80,15 @@ namespace MISA.WEB08.AMIS.CORE.Services
             // Mã nhân viên không được phép để trống
             if (string.IsNullOrEmpty(employee.EmployeeCode))
             {
-                throw new MISAValidateException("Mã nhân viên không được phép để trống");
+                throw new MISAValidateException(ResourceVN.Error_Validate_Employee_EmployeeCode);
             }
             else if (string.IsNullOrEmpty(employee.FullName))
             {
-                throw new MISAValidateException("Tên nhân viên không được phép để trống");
+                throw new MISAValidateException(ResourceVN.Error_Validate_Employee_FullName);
             }
             else if (employee.DepartmentID == null || employee.DepartmentID == Guid.Empty)
             {
-                throw new MISAValidateException("ID phòng ban không được phép để trống");
+                throw new MISAValidateException(ResourceVN.Error_Validate_Department_DepartmentID);
             }
 
             return 1;

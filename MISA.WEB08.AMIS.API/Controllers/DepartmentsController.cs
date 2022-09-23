@@ -4,6 +4,7 @@ using MISA.WEB08.AMIS.CORE.Entities;
 using MISA.WEB08.AMIS.CORE.Entities.DTO;
 using MISA.WEB08.AMIS.CORE.Enums;
 using MISA.WEB08.AMIS.CORE.Interfaces.Infrastructure;
+using MISA.WEB08.AMIS.CORE.Resources;
 
 namespace MISA.WEB08.AMIS.API.Controllers
 {
@@ -61,8 +62,8 @@ namespace MISA.WEB08.AMIS.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new ErrorResult(
                     ErrorCode.Exception,
                     ex.Message,
-                    "Có lỗi xảy ra, vui lòng liên hệ với MISA",
-                    "httpps://openapi.misa.com.vn/error-code/e001",
+                    ResourceVN.Error_Exception,
+                    ResourceLink.e001,
                     HttpContext.TraceIdentifier
                     ));
             }

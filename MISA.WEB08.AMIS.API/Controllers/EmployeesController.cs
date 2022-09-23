@@ -7,6 +7,7 @@ using MISA.WEB08.AMIS.CORE.Interfaces.Services;
 using MISA.WEB08.AMIS.CORE.Services;
 using MISA.WEB08.AMIS.CORE.Exceptions;
 using MISA.WEB08.AMIS.CORE.Interfaces.Infrastructure;
+using MISA.WEB08.AMIS.CORE.Resources;
 
 namespace MISA.WEB08.AMIS.API.Controllers
 {
@@ -64,9 +65,9 @@ namespace MISA.WEB08.AMIS.API.Controllers
                 (
                     ErrorCode.Exception,
                     ex.Message,
-                    "Có lỗi xảy ra, vui lòng liên hệ với MISA.",
-                    "https://openapi.misa.com.vn/errorcode/e001",
-                     HttpContext.TraceIdentifier
+                    ResourceVN.Error_Exception,
+                    ResourceLink.e001,
+                    HttpContext.TraceIdentifier
                 ));
             }
         }
@@ -96,9 +97,9 @@ namespace MISA.WEB08.AMIS.API.Controllers
                 (
                     ErrorCode.Exception,
                     ex.Message,
-                    "Có lỗi xảy ra, vui lòng liên hệ với MISA.",
-                    "https://openapi.misa.com.vn/errorcode/e001",
-                     HttpContext.TraceIdentifier
+                    ResourceVN.Error_Exception,
+                    ResourceLink.e001,
+                    HttpContext.TraceIdentifier
                 ));
             }
         }
@@ -129,9 +130,9 @@ namespace MISA.WEB08.AMIS.API.Controllers
                 (
                     ErrorCode.Exception,
                     ex.Message,
-                    "Có lỗi xảy ra, vui lòng liên hệ với MISA.",
-                    "https://openapi.misa.com.vn/errorcode/e001",
-                     HttpContext.TraceIdentifier
+                    ResourceVN.Error_Exception,
+                    ResourceLink.e001,
+                    HttpContext.TraceIdentifier
                 ));
             }
         }
@@ -210,9 +211,9 @@ namespace MISA.WEB08.AMIS.API.Controllers
                 (
                     ErrorCode.EmptyCode,
                     ex.Message,
-                    "Có lỗi xảy ra, vui lòng liên hệ với MISA.",
-                    "https://openapi.misa.com.vn/errorcode/e001",
-                     HttpContext.TraceIdentifier
+                    ResourceVN.Error_Validate_Common,
+                    ResourceLink.e002,
+                    HttpContext.TraceIdentifier
                 ));
             }
             //Exception chung thì vào đây
@@ -225,9 +226,9 @@ namespace MISA.WEB08.AMIS.API.Controllers
                 (
                     ErrorCode.Exception,
                     ex.Message,
-                    "Có lỗi xảy ra, vui lòng liên hệ với MISA.",
-                    "https://openapi.misa.com.vn/errorcode/e001",
-                     HttpContext.TraceIdentifier
+                    ResourceVN.Error_Exception,
+                    ResourceLink.e001,
+                    HttpContext.TraceIdentifier
                 ));
             }
         }
@@ -268,9 +269,9 @@ namespace MISA.WEB08.AMIS.API.Controllers
                 (
                     ErrorCode.EmptyCode,
                     ex.Message,
-                    "Có lỗi xảy ra, vui lòng liên hệ với MISA.",
-                    "https://openapi.misa.com.vn/errorcode/e001",
-                     HttpContext.TraceIdentifier
+                    ResourceVN.Error_Validate_Common,
+                    ResourceLink.e002,
+                    HttpContext.TraceIdentifier
                 ));
             }
             catch (Exception ex)
@@ -282,9 +283,9 @@ namespace MISA.WEB08.AMIS.API.Controllers
                 (
                     ErrorCode.Exception,
                     ex.Message,
-                    "Có lỗi xảy ra, vui lòng liên hệ với MISA.",
-                    "https://openapi.misa.com.vn/errorcode/e001",
-                     HttpContext.TraceIdentifier
+                    ResourceVN.Error_Exception,
+                    ResourceLink.e001,
+                    HttpContext.TraceIdentifier
                 ));
             }
         }
@@ -320,9 +321,9 @@ namespace MISA.WEB08.AMIS.API.Controllers
                 (
                     ErrorCode.Exception,
                     ex.Message,
-                    "Có lỗi xảy ra, vui lòng liên hệ với MISA.",
-                    "https://openapi.misa.com.vn/errorcode/e001",
-                     HttpContext.TraceIdentifier
+                    ResourceVN.Error_Exception,
+                    ResourceLink.e001,
+                    HttpContext.TraceIdentifier
                 ));
             }
         }
